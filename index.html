@@ -4,17 +4,92 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>All Aboard!</title>
 		<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">		
 		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 	</head>
 <body>
 
     <div id="wrapper">
+		<div class="jumbotron text-center">
+			<h1>Train Schedule</h1>
+			<p></p>
+		</div>
+
+<!-- Train Times and Destinations -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="div-heading">
+						<h3 class="panel-title">Current Train Schedules</h3>
+					</div>
+					<table class="table" id="trainData">
+						<thead>
+							<tr>
+								<th>Train Name</th>
+								<th>Deastination</th>
+								<th>Frequency (min)</th>
+								<th>Next Arrival</th>
+								<th>Minutes Away</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Westbound</td>
+								<td>Denver</td>
+								<td>60</td>
+								<td>12:30</td>
+								<td>25</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+
+<!-- Add Train Form -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="div-heading">
+						<h3 class="panel-title">Add Train</h3>
+					</div>
+					<div class="panel-body">
+						<form class="form">
+							<div class="form-group">
+								<label for="trainNameLabel">Train Name</label>
+								<input type="text" name="trainName" id="trainName" class="form-control">
+							</div>
+							<div class="form-group">
+									<label for="destinationLabel">Destination</label>
+									<input type="text" name="destination" id="destination" class="form-control">
+							</div>
+							<div class="form-group">
+									<label for="firstTrainLabel">First Train Time (HH:mm - Military Time)</label>
+									<input type="text" name="firstTrain" id="firstTrain" class="form-control">
+							</div>
+							<div class="form-group">
+									<label for="frequencyLabel">Frequency (min)</label>
+									<input type="text" name="frequency" id="frequency" class="form-control">
+							</div>
+							<div>
+								<button class="btn btn-default" id="submit" type="submit">Submit</button>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
 
 
     </div>  <!-- end of wrapper -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="assets/javascript/logic.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>	
 </body>
 </html>
