@@ -9,10 +9,18 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var database = firebase.database();
+var trainCount = 0;
 
-
-
+var dbRef = firebase.database().ref();
+dbRef.child('trains').on('value', function(snapshot) 
+{
+   var trains = snapshot.val();
+   trainCount = trains.length;
+   makeRows(trains);
+}, function(error)
+{
+    console.log(error);
+});
 
 $(document).ready(function()
 {
@@ -27,29 +35,56 @@ $(document).ready(function()
 
         console.log(trainName, destination, firstTrain, frequency)
 
+        addTrain(trainName, destination, firstTrain, frequency)
+    });
+
+});
+
+var addTrain = function(trainName, destination, firstTrain, frequency)
+{
+    dbRef.child('trains').child(trainCount).set(
+    {
+        trainName: trainName,
+        destination: destination,
+        firstTrain: firstTrain,
+        frequency: frequency
+    }); 
+}
+
+var makeRows = function(trains) 
+{
+    $("tbody").empty();
+    for(i = 0; i < trains.lengh; i++)
+    {
+        var trainNameOutput = trains[i].trainName;
+        var destinationOutput = trains[i].destination;
+        var firstTrainOutput = trains[i].firstTrain;
+        var frequencyOutput = trains[i].frequency;
+
         var newRow = $("<tr>");
-        
-            var newTrainName = $("<td>").text(trainName);
-            var newDestination = $("<td>").text(destination);
-            var newFirstTrain = $("<td>").text(firstTrain);
-            var newFrequency = $("<td>").text(frequency);
-            var newMinutesAway = $("<td>").text("");
-        
-            newRow.append(newTrainName);
-            newRow.append(newDestination);
-            newRow.append(newFrequency);
-            newRow.append(newFirstTrain);
-            newRow.append(newMinutesAway);
-        
-            $("tbody").append(newRow);
-    })
+
+        var newTrainName = $("<td>").text(trainNameOutput);
+        var newDestination = $("<td>").text(destinationOutput);
+        var newFirstTrain = $("<td>").text(firstTrainOutput);
+        var newFrequency = $("<td>").text(frequencyOutput);
+        var newMinutesAway = $("<td>").text("");
+
+        newRow.append(newTrainName);
+        newRow.append(newDestination);
+        newRow.append(newFrequency);
+        newRow.append(newFirstTrain);
+        newRow.append(newMinutesAway);
+
+        $("tbody").append(newRow);
+    }
+}
 
     // var newRow = $("<tr>");
 
-    // var newTrainName = $("<td>").text(trainName);
-    // var newDestination = $("<td>").text(destination);
-    // var newFirstTrain = $("<td>").text(firstTrain);
-    // var newFrequency = $("<td>").text(frequency);
+    // var newTrainName = $("<td>").text(trainNameOutput);
+    // var newDestination = $("<td>").text(destinationOutput);
+    // var newFirstTrain = $("<td>").text(firstTrainOutput);
+    // var newFrequency = $("<td>").text(frequencyOutput);
     // var newMinutesAway = $("<td>").text("");
 
     // newRow.append(newTrainName);
@@ -59,5 +94,3 @@ $(document).ready(function()
     // newRow.append(newMinutesAway);
 
     // $("tbody").append(newRow);
-
-});
