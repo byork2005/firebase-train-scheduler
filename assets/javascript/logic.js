@@ -1,30 +1,33 @@
- // Initialize Firebase
-var config = {
-    apiKey: "AIzaSyDj2Ugq-1GcD4F0vGkaJbCNx6ijUNSRkxQ",
-    authDomain: "trainproject-cf11b.firebaseapp.com",
-    databaseURL: "https://trainproject-cf11b.firebaseio.com",
-    projectId: "trainproject-cf11b",
-    storageBucket: "trainproject-cf11b.appspot.com",
-    messagingSenderId: "118238346812"
-};
-firebase.initializeApp(config);
-
-var trainCount = 0;
-
-var dbRef = firebase.database().ref();
-dbRef.child('trains').on('value', function(snapshot) 
-{
-   var trains = snapshot.val();
-   trainCount = trains.length;
-   makeRows(trains);
-}, function(error)
-{
-    console.log(error);
-});
-
 $(document).ready(function()
-{
-    $("#submit").on("click", function(event) 
+{ 
+ 
+ // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDj2Ugq-1GcD4F0vGkaJbCNx6ijUNSRkxQ",
+        authDomain: "trainproject-cf11b.firebaseapp.com",
+        databaseURL: "https://trainproject-cf11b.firebaseio.com",
+        projectId: "trainproject-cf11b",
+        storageBucket: "trainproject-cf11b.appspot.com",
+        messagingSenderId: "118238346812"
+    };
+    firebase.initializeApp(config);
+
+    var trainCount = 0;
+
+    // Monitor for value changes. Change trainCount and runs makeRows fn.
+    var database = firebase.database();
+    database.ref('trains/').on('value', function(snapshot) 
+    {
+    trains = snapshot.val();
+    trainCount = trains.length;
+    makeRows(trains);
+    }, function(error)
+    {
+        console.log(error);
+    });
+
+    // Form Submit. Collects data, runs addTrain fn.
+    $("#submitBtn").on("click", function(event) 
     {
         event.preventDefault();
 
@@ -34,63 +37,51 @@ $(document).ready(function()
         var frequency = $("#frequency").val().trim();
 
         console.log(trainName, destination, firstTrain, frequency)
+        console.log(trains)
 
         addTrain(trainName, destination, firstTrain, frequency)
+        
     });
 
-});
-
-var addTrain = function(trainName, destination, firstTrain, frequency)
-{
-    dbRef.child('trains').child(trainCount).set(
+    // Sends data to database as new entry.
+    var addTrain = function(trainName, destination, firstTrain, frequency)
     {
-        trainName: trainName,
-        destination: destination,
-        firstTrain: firstTrain,
-        frequency: frequency
-    }); 
-}
-
-var makeRows = function(trains) 
-{
-    $("tbody").empty();
-    for(i = 0; i < trains.lengh; i++)
-    {
-        var trainNameOutput = trains[i].trainName;
-        var destinationOutput = trains[i].destination;
-        var firstTrainOutput = trains[i].firstTrain;
-        var frequencyOutput = trains[i].frequency;
-
-        var newRow = $("<tr>");
-
-        var newTrainName = $("<td>").text(trainNameOutput);
-        var newDestination = $("<td>").text(destinationOutput);
-        var newFirstTrain = $("<td>").text(firstTrainOutput);
-        var newFrequency = $("<td>").text(frequencyOutput);
-        var newMinutesAway = $("<td>").text("");
-
-        newRow.append(newTrainName);
-        newRow.append(newDestination);
-        newRow.append(newFrequency);
-        newRow.append(newFirstTrain);
-        newRow.append(newMinutesAway);
-
-        $("tbody").append(newRow);
+        database.ref('trains/' + trainCount).set(
+        {
+            trainName: trainName,
+            destination: destination,
+            firstTrain: firstTrain,
+            frequency: frequency
+        }); 
     }
-}
 
-    // var newRow = $("<tr>");
+    // Runs through array of entrys and creates new rows for each train. Runs when change is made.
+    var makeRows = function(trainList) 
+    {
+        $("tbody").empty();
+        for(var i = 0; i < trainList.length; i++)
+        {
+            var trainNameOutput = trainList[i].trainName;
+            var destinationOutput = trainList[i].destination;
+            var firstTrainOutput = trainList[i].firstTrain;
+            var frequencyOutput = trainList[i].frequency;
 
-    // var newTrainName = $("<td>").text(trainNameOutput);
-    // var newDestination = $("<td>").text(destinationOutput);
-    // var newFirstTrain = $("<td>").text(firstTrainOutput);
-    // var newFrequency = $("<td>").text(frequencyOutput);
-    // var newMinutesAway = $("<td>").text("");
+            var newRow = $("<tr>");
 
-    // newRow.append(newTrainName);
-    // newRow.append(newDestination);
-    // newRow.append(newFrequency);
-    // newRow.append(newFirstTrain);
-    // newRow.append(newMinutesAway);
+            var newTrainName = $("<td>").text(trainNameOutput);
+            var newDestination = $("<td>").text(destinationOutput);
+            var newFirstTrain = $("<td>").text(firstTrainOutput);
+            var newFrequency = $("<td>").text(frequencyOutput);
+            var newMinutesAway = $("<td>").text("");
 
-    // $("tbody").append(newRow);
+            newRow.append(newTrainName);
+            newRow.append(newDestination);
+            newRow.append(newFrequency);
+            newRow.append(newFirstTrain);
+            newRow.append(newMinutesAway);
+
+            $("tbody").append(newRow);
+        }
+    }
+
+});
