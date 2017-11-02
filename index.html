@@ -7,6 +7,7 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">		
 		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 		<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+		<script src="assets/javascript/moment.js"></script>
 	</head>
 <body>
 
@@ -59,19 +60,19 @@
 						<form class="form" id="myForm">
 							<div class="form-group">
 								<label for="trainNameLabel">Train Name</label>
-								<input type="text" name="trainName" id="trainName" class="form-control">
+								<input type="text" name="trainName" id="trainName" class="form-control" required>
 							</div>
 							<div class="form-group">
 									<label for="destinationLabel">Destination</label>
-									<input type="text" name="destination" id="destination" class="form-control">
+									<input type="text" name="destination" id="destination" class="form-control" required>
 							</div>
 							<div class="form-group">
-									<label for="firstTrainLabel">First Train Time (HH:mm - Military Time)</label>
-									<input type="text" name="firstTrain" id="firstTrain" class="form-control">
+									<label for="firstTrainLabel">First Train Time (HHmm - 24 hour notation)</label>
+									<input type="text" name="firstTrain" id="firstTrain" class="form-control" max="2400" min="0001" required>
 							</div>
 							<div class="form-group">
 									<label for="frequencyLabel">Frequency (min)</label>
-									<input type="text" name="frequency" id="frequency" class="form-control">
+									<input type="text" name="frequency" id="frequency" class="form-control" required>
 							</div>
 							<div>
 								<button class="btn btn-default" id="submitBtn" type="button">Submit</button>

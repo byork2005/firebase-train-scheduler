@@ -1,6 +1,5 @@
 $(document).ready(function()
 { 
- 
  // Initialize Firebase
     var config = {
         apiKey: "AIzaSyDj2Ugq-1GcD4F0vGkaJbCNx6ijUNSRkxQ",
@@ -39,8 +38,7 @@ $(document).ready(function()
         console.log(trainName, destination, firstTrain, frequency)
         console.log(trains)
 
-        addTrain(trainName, destination, firstTrain, frequency)
-        
+        addTrain(trainName, destination, firstTrain, frequency) 
     });
 
     // Sends data to database as new entry.
@@ -70,18 +68,48 @@ $(document).ready(function()
 
             var newTrainName = $("<td>").text(trainNameOutput);
             var newDestination = $("<td>").text(destinationOutput);
-            var newFirstTrain = $("<td>").text(firstTrainOutput);
+            var newNextArrival = $("<td>").text("");
             var newFrequency = $("<td>").text(frequencyOutput);
             var newMinutesAway = $("<td>").text("");
 
             newRow.append(newTrainName);
             newRow.append(newDestination);
             newRow.append(newFrequency);
-            newRow.append(newFirstTrain);
+            newRow.append(newNextArrival);
             newRow.append(newMinutesAway);
+
+            var time = (""+firstTrainOutput).split("");
+            console.log(time)
+
+
+
+
 
             $("tbody").append(newRow);
         }
     }
+
+    // function timeconverter(t) 
+    // {
+    //        
+    //         var minutes = Math.floor(t / 60);
+    //         var seconds = t - (minutes * 60);
+        
+    //         if (seconds < 10) {
+    //           seconds = "0" + seconds;
+    //         }
+        
+    //         if (minutes === 0) {
+    //           minutes = "00";
+    //         }
+    //         else if (minutes < 10) {
+    //           minutes = "0" + minutes;
+    //         }
+            
+        
+    //         minutes + ":" + seconds;
+    // };
+
+        
 
 });
