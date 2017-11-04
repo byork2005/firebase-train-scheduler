@@ -11,18 +11,19 @@ $(document).ready(function()
     };
     firebase.initializeApp(config);
 
-    var trainCount = 0;
-    // var mathHours;
-    // var mathMinutes;
-    // var totalMinutes;
+    var trainCount;
 
     // Monitor for value changes. Change trainCount and runs makeRows fn.
     var database = firebase.database();
-    database.ref('trains/').on('value', function(snapshot) 
+    database.ref('trains').on('value', function(snapshot) 
     {
     trains = snapshot.val();
     trainCount = trains.length;
-    makeRows(trains);
+    console.log(trains.trainName);
+    console.log(trains.destination);
+    console.log(trains.frequency);
+
+    makeRows(trains); 
     }, function(error)
     {
         console.log(error);
@@ -67,13 +68,15 @@ $(document).ready(function()
             var firstTrainOutput = trainList[i].firstTrain;
             var frequencyOutput = parseInt(trainList[i].frequency);
 
+            runNumbers(firstTrainOutput, frequencyOutput);
+
             var newRow = $("<tr>");
 
             var newTrainName = $("<td>").text(trainNameOutput);
             var newDestination = $("<td>").text(destinationOutput);
-            var newNextArrival = $("<td>").text("");
+            var newNextArrival = $("<td>").text(nextArrivalOutput);
             var newFrequency = $("<td>").text(frequencyOutput);
-            var newMinutesAway = $("<td>").text("");
+            var newMinutesAway = $("<td>").text(minutesAwayOutput);
 
             newRow.append(newTrainName);
             newRow.append(newDestination);
@@ -85,51 +88,114 @@ $(document).ready(function()
         }
     }
 
+    var now = moment();
     var nextArrivalOutput;
     var minutesAwayOutput;
 
+    // var x = testNum.split("");
+    // var hours = Number(x[0] + x[1]);
+    // var minutes = Number(x[2] + x[3]);
 
-    var string = moment("2300", "HHmm");
-    console.log(string);
-    var now = moment();
-    console.log(moment(now).isBefore(string, "m"));
-    var testFreq = 90;
-    var test = moment("1900", "HHmm").add(25, 'm');
-    console.log(test);
+    // console.log(now);
+    // var arrivalObject = moment().hour(hours).minute(minutes).second(0);
+    // console.log(arrivalObject);
+    // var intervalTime = moment(arrivalObject).add(180, 'm');
+    // console.log(intervalTime);
+    // if (moment().isBefore(arrivalObject, "m"))
+    // {
+    //     console.log("the event has not happened yet")
+    // } else
+    // {
+    //     console.log('the event already happened.')
+    // }
 
-    function nextArrival(first, freq)
+    function runNumbers(FTO, freq)
     {
-        moment(first).add(freq, "m");
-        if (moment(first).isBefore(now, "m"))
+        var now = moment();
+        var iterations = 0;
+        var xArray = FTO.split("");
+        var hours = Number(xArray[0] + xArray[1]);
+        var minutes = Number(xArray[2] + xArray[3]);
+
+        var arrivalObject = moment().hour(hours).minute(minutes).second(0);
+        console.log("1",FTO, freq)
+        console.log("2",xArray)
+        console.log("3",hours, minutes);
+        console.log("4", arrivalObject)
+        
+
+        loop();
+        function loop()
         {
-            nextArrival(first, freq);
-        } else 
-        {
-            var nextArrivalOutput = first;
-            // var minutesAwayOutput = moment(first).toNow();
+            if ((moment().isBefore(arrivalObject, "m")))
+            {
+                nextArrivalOutput = arrivalObject.format("HH:mm");
+                var awayHour = arrivalObject.hour() - now.hour();
+                var awayMin = arrivalObject.minute() - now.minute();
+                if (awayMin < 0)
+                {
+                    awayMin = 60 + awayMin
+                }
+                var totalMin = (awayHour * 60) + awayMin;
+                minutesAwayOutput = totalMin;
+                console.log("done")
+                console.log("5",arrivalObject);
+                console.log("6", nextArrivalOutput);
+                console.log("7", minutesAwayOutput);
+                console.log("8", awayHour, awayMin);
+            } else
+            {
+                arrivalObject = moment(arrivalObject).add(freq, 'm');
+                iterations++;
+                loop();
+            }
         }
-        console.log(nextArrivalOutput);
     }
 
-    // function nextArrival()
+    // setInterval(function()
     // {
-    //     moment("23:00").add(90, "m");
-    //     if (moment("23:00").isBefore(now, "m"))
-    //     {
-    //         nextArrival("23:00", 90);
-    //     } else 
-    //     {
-    //         var nextArrivalOutput = "23:00";
-    //         var minutesAwayOutput = moment("23:00").toNow;
-    //     }
-    // }
-    nextArrival(string, testFreq);
+    //     makeRows()
+    // }, 1000 * 60);
     
 
 
 
 
 
+
+    // var string = moment(testNum, "HH:mm");
+    // // moment(string, ["HHmm", "HH:mm"])
+    // console.log(string);
+    // var now = moment();
+    // // console.log(moment(now).isBefore(string, "m"));
+    // var testFreq = 90;
+    
+    // // console.log(now);
+    // var enterTime = moment().hour(20).minute(15);
+    // // console.log(enterTime);
+
+    // moment(now).add(90, "m");
+    // console.log(now);
+    // console.log(now.add(90, "m"));
+
+
+
+
+
+
+    // function nextArrival(first, freq)
+    // {
+    //     moment(first).add(freq, "m");
+    //     if (moment(first).isBefore(now, "m"))
+    //     {
+    //         nextArrival(first, freq);
+    //     } else 
+    //     {
+    //         var nextArrivalOutput = first;
+    //         // var minutesAwayOutput = moment(first).toNow();
+    //     }
+    //     console.log(nextArrivalOutput);
+    // }
 
 
     // function stdTime(FTO)
@@ -165,9 +231,9 @@ $(document).ready(function()
 
     // function timeconverter(t) 
     // {
-    //        
+           
     //         var hours = Math.floor(t / 60);
-    //         var seconds = t - (hours * 60);
+    //         var minutes = t - (hours * 60);
         
     //         if (minutes < 10) {
     //           minutes = "0" + minutes;
